@@ -1,7 +1,5 @@
 /* ACT Right Notary — shared stylesheet */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
-
 :root {
   --navy-deep: #0b2545;
   --navy-mid: #13315c;
@@ -320,3 +318,61 @@ section { padding: 64px 24px; }
   .info-row { flex-direction: column; gap: 4px; }
   .info-label { flex-basis: auto; }
 }
+
+/* ---------- Contact form ---------- */
+
+.contact-form {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 32px;
+  margin-top: 20px;
+  max-width: 640px;
+}
+
+.form-field { margin-bottom: 18px; }
+
+.form-field label {
+  display: block;
+  font-weight: 600;
+  color: var(--navy-deep);
+  margin-bottom: 6px;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+.contact-form button.btn {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.contact-form button.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.form-status { margin: 14px 0 0; font-weight: 500; }
+.form-status.success { color: #2e6b3a; }
+.form-status.error { color: #9b2c2c; }
