@@ -67,42 +67,38 @@
     </div>
     <h2 style="margin-top:48px;">Send a message</h2>
     <p>Tell us what you need and when, and we'll reply to confirm your appointment. Please don't include ID numbers or document contents.</p>
-    <form id="contact-form" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-      <div class="form-field">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required autocomplete="name">
-      </div>
-      <div class="form-field">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required autocomplete="email">
-      </div>
-      <div class="form-field">
-        <label for="phone">Phone (optional)</label>
-        <input type="tel" id="phone" name="phone" autocomplete="tel">
-      </div>
-      <div class="form-field">
-        <label for="service">Service needed</label>
-        <select id="service" name="service" required>
-          <option value="">Choose a service</option>
-          <option>Mobile notarization</option>
-          <option>Loan signing</option>
-          <option>Printing</option>
-          <option>Courier &amp; delivery</option>
-          <option>Not sure yet</option>
-        </select>
-      </div>
-      <div class="form-field">
-        <label for="when">Preferred date and time</label>
-        <input type="text" id="when" name="preferred_time" placeholder="For example, Saturday morning">
-      </div>
-      <div class="form-field">
-        <label for="message">Message</label>
-        <textarea id="message" name="message" rows="5" required></textarea>
-      </div>
-      <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <button type="submit" class="btn btn-primary">Send message</button>
-      <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
-    </form>
+    <form id="contact-form" action="https://api.web3forms.com/submit" method="POST">
+  <input type="hidden" name="access_key" value="562184d5-1a3d-42d2-8d8e-0713470682f3">
+  <input type="hidden" name="subject" value="New appointment request - ACT Right Notary">
+  <input type="hidden" name="from_name" value="ACT Right Notary Website">
+  <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" required>
+
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" required>
+
+  <label for="phone">Phone (optional)</label>
+  <input type="tel" id="phone" name="phone">
+
+  <label for="service">Service</label>
+  <select id="service" name="service">
+    <option>Mobile notarization</option>
+    <option>Loan signing</option>
+    <option>Printing</option>
+    <option>Courier / delivery</option>
+    <option>Other</option>
+  </select>
+
+  <label for="message">Message</label>
+  <textarea id="message" name="message" required></textarea>
+
+  <p class="form-note">Please don't include SSNs or account numbers here. Share those at your appointment.</p>
+
+  <button type="submit">Request an Appointment</button>
+  <p id="form-status" class="form-status" role="status"></p>
+</form>
     <p style="margin-top:24px;"><a href="index.html">&larr; Back to home</a></p>
     </div>
 </section>
@@ -132,7 +128,8 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     status.className = 'form-status';
-    if (form.action.indexOf('YOUR_FORM_ID') !== -1) {
+    var key = form.querySelector('[name="access_key"]');
+    if (!key || key.value === 'YOUR_ACCESS_KEY') {
       status.textContent = 'The form is not connected yet. Please call or email instead.';
       status.classList.add('error');
       return;
@@ -144,13 +141,15 @@
       body: new FormData(form),
       headers: { 'Accept': 'application/json' }
     }).then(function (res) {
-      if (res.ok) {
-        form.reset();
-        status.textContent = 'Message sent. We will reply to confirm your appointment.';
-        status.classList.add('success');
-      } else {
-        throw new Error('Request failed');
-      }
+      return res.json().then(function (data) {
+        if (res.ok && data.success) {
+          form.reset();
+          status.textContent = 'Message sent. We will reply to confirm your appointment.';
+          status.classList.add('success');
+        } else {
+          throw new Error('Request failed');
+        }
+      });
     }).catch(function () {
       status.textContent = 'Your message was not sent. Please call (719) 648-9336 or email actrightnotary@gmail.com.';
       status.classList.add('error');
